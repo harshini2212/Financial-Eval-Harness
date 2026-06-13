@@ -1,0 +1,21 @@
+# Secrets — never commit
+.env
+*.env
+credentials*
+
+# LLM response cache (regenerable; can be large)
+.cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+
+# arelle taxonomy cache
+.arelle/
+
+# editor / tool config
+.claude/

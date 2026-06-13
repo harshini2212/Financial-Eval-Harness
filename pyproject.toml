@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tieout"
+version = "0.0.0"
+description = "Accounting-identity constraint graph for verifying LLM-extracted figures from SEC 10-K filings."
+requires-python = ">=3.11"
+# Phase 0 core is intentionally stdlib-only so the walking skeleton runs with zero install.
+# Heavier deps are introduced phase-by-phase under optional extras.
+dependencies = []
+
+[project.optional-dependencies]
+# Phase 0+: real XBRL ingestion (EDGAR ground truth).
+xbrl = ["arelle-release>=2.20"]
+# Phase 3+: provider-agnostic extraction adapters.
+llm = ["anthropic>=0.40", "google-genai>=0.3"]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -1,0 +1,98 @@
+{
+  "_comment": "DRAFT gold questions for Costco FY2025 10-K. ALL verified=false until hv2201 hand-checks each against the source filing. Verify draft_confidence=low/medium first. Values below were read from the filing's XBRL during development but MUST be independently confirmed against the rendered 10-K before use.",
+  "questions": [
+    {
+      "question_id": "cost-fy25-001",
+      "filing_ref": {"cik": "0000909832", "accession": "0000909832-25-000101", "fiscal_year": 2025, "issuer": "Costco Wholesale Corp"},
+      "prompt": "What was Costco's total revenue for fiscal year 2025?",
+      "answer_type": "scalar",
+      "category": "extraction",
+      "difficulty": "easy",
+      "gold_answer": {"value": 275235000000, "unit": "USD", "fiscal_year": 2025, "fiscal_period": "FY"},
+      "input_concepts": ["revenue.total"],
+      "citation": "Consolidated Statements of Income, FY2025 column (VERIFY page)",
+      "verified": false,
+      "draft_confidence": "high"
+    },
+    {
+      "question_id": "cost-fy25-002",
+      "filing_ref": {"cik": "0000909832", "accession": "0000909832-25-000101", "fiscal_year": 2025, "issuer": "Costco Wholesale Corp"},
+      "prompt": "What was Costco's total assets at fiscal year-end 2025?",
+      "answer_type": "scalar",
+      "category": "extraction",
+      "difficulty": "easy",
+      "gold_answer": {"value": 77099000000, "unit": "USD", "fiscal_year": 2025, "fiscal_period": "FY"},
+      "input_concepts": ["assets.total"],
+      "citation": "Consolidated Balance Sheets, 2025 column (VERIFY page)",
+      "verified": false,
+      "draft_confidence": "high"
+    },
+    {
+      "question_id": "cost-fy25-003",
+      "filing_ref": {"cik": "0000909832", "accession": "0000909832-25-000101", "fiscal_year": 2025, "issuer": "Costco Wholesale Corp"},
+      "prompt": "What was net income attributable to Costco for fiscal year 2025?",
+      "answer_type": "scalar",
+      "category": "extraction",
+      "difficulty": "easy",
+      "gold_answer": {"value": 8099000000, "unit": "USD", "fiscal_year": 2025, "fiscal_period": "FY"},
+      "input_concepts": ["net_income.parent"],
+      "citation": "Consolidated Statements of Income, FY2025 (VERIFY page)",
+      "verified": false,
+      "draft_confidence": "high"
+    },
+    {
+      "question_id": "cost-fy25-004",
+      "filing_ref": {"cik": "0000909832", "accession": "0000909832-25-000101", "fiscal_year": 2025, "issuer": "Costco Wholesale Corp"},
+      "prompt": "What was Costco's United States segment net sales for fiscal year 2025?",
+      "answer_type": "scalar",
+      "category": "extraction",
+      "difficulty": "medium",
+      "gold_answer": {"value": 200046000000, "unit": "USD", "fiscal_year": 2025, "fiscal_period": "FY", "dimensions": [["segment", "UnitedStatesMember"]]},
+      "input_concepts": ["revenue.segment"],
+      "citation": "Segment Reporting note (VERIFY page + exact US segment figure)",
+      "verified": false,
+      "draft_confidence": "medium"
+    },
+    {
+      "question_id": "cost-fy25-005",
+      "filing_ref": {"cik": "0000909832", "accession": "0000909832-25-000101", "fiscal_year": 2025, "issuer": "Costco Wholesale Corp"},
+      "prompt": "What was Costco's operating income for fiscal year 2025?",
+      "answer_type": "scalar",
+      "category": "extraction",
+      "difficulty": "easy",
+      "gold_answer": {"value": 10383000000, "unit": "USD", "fiscal_year": 2025, "fiscal_period": "FY"},
+      "input_concepts": ["operating_income.total"],
+      "citation": "Consolidated Statements of Income, FY2025 (VERIFY page)",
+      "verified": false,
+      "draft_confidence": "high"
+    },
+    {
+      "question_id": "cost-fy25-006",
+      "filing_ref": {"cik": "0000909832", "accession": "0000909832-25-000101", "fiscal_year": 2025, "issuer": "Costco Wholesale Corp"},
+      "prompt": "What was Costco's operating margin for fiscal year 2025?",
+      "answer_type": "derived",
+      "category": "single_identity",
+      "difficulty": "medium",
+      "gold_answer": {"value": 0.0377, "unit": "ratio", "fiscal_year": 2025, "fiscal_period": "FY"},
+      "derivation_template_id": "margin.operating",
+      "input_concepts": ["operating_income.total", "revenue.total"],
+      "citation": "Derived: operating income / total revenue (CONFIRM rounding convention)",
+      "verified": false,
+      "draft_confidence": "medium"
+    },
+    {
+      "question_id": "cost-fy25-007",
+      "filing_ref": {"cik": "0000909832", "accession": "0000909832-25-000101", "fiscal_year": 2025, "issuer": "Costco Wholesale Corp"},
+      "prompt": "What was Costco's effective income tax rate for fiscal year 2025?",
+      "answer_type": "derived",
+      "category": "single_identity",
+      "difficulty": "hard",
+      "gold_answer": {"value": 0.2513, "unit": "ratio", "fiscal_year": 2025, "fiscal_period": "FY"},
+      "derivation_template_id": "tax.effective_rate",
+      "input_concepts": ["income_tax.total", "pretax_income.total"],
+      "citation": "Derived: income tax expense / pretax income (CONFIRM against rate reconciliation in tax note)",
+      "verified": false,
+      "draft_confidence": "low"
+    }
+  ]
+}
