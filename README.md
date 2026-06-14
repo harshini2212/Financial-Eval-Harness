@@ -4,6 +4,8 @@
 
 > *"Tie-out"* is the analyst's term for proving reported numbers reconcile. This automates it.
 
+![tieout UI — overview](docs/img/ui-overview.png)
+
 ---
 
 ## The pitch
@@ -64,8 +66,8 @@ Ships with precomputed results, so it runs instantly, offline, **no API key**:
 pip install fastapi "uvicorn[standard]"
 python serve.py                             # -> http://localhost:8000
 ```
-Tabs: **Overview · Filing explorer · Propagation · Attribution · Localization · Registry · About.**
-A "Run live" button re-runs a filing against EDGAR + Claude (needs a key).
+Tabs: **Overview · Filing explorer · Propagation · Attribution · Localization · Rulebook · Approach.**
+It includes charts (extraction-accuracy bars, a segment **waterfall**, an identity-outcome **donut**), plain-English explainers, and a **live connector**: type a company name, pick from a market-cap-ranked dropdown (SEC EDGAR), and run the full eval live. `run.ps1` (Windows) loads your API key so live runs work out of the box.
 
 ## Quickstart (3 commands)
 
@@ -83,6 +85,24 @@ More: `python scripts/phase0_real.py COST` (ground-truth reconciliation) · `pyt
 - **Gold set**: ~30–50 hand-verified Q&A (loader already gates answers as unverified until confirmed) + an LLM-judge baseline to measure caught-vs-passed directly. (Costco drafts in `data/gold/`.)
 - **Segment roll-ups** need explicit corporate/unallocated/eliminations terms to handle conglomerates like 3M (currently declines to evaluate rather than false-flag).
 - **Stretch**: XBRL calculation-linkbase harvester (auto-derive filing-specific constraints) and a probabilistic factor-graph engine for per-figure confidence.
+
+## Errors encountered & how we resolved them
+
+Building the live demo surfaced real bugs — documenting them (and the fixes) because the debugging *is* the engineering:
+
+**1 · "ticker 'NVIDIA' not found in EDGAR index"**
+
+![ticker not found](docs/img/error-ticker.png)
+
+Typing a company *name* sent the name straight to EDGAR as a ticker. **Fix:** a typeahead — `/api/search` scores matches over EDGAR's company list and ranks by market cap (the file is ordered largest-first), with brand aliases (`nbc → Comcast`, `google → Alphabet`). You now pick a real company from a dropdown instead of guessing tickers.
+
+**2 · "Could not resolve authentication method" on a live run**
+
+![auth method](docs/img/error-auth.png)
+
+The server process was started without `ANTHROPIC_API_KEY` in its environment. **Fix:** the app now loads the key on import from `./.env` or the out-of-repo credentials file (multiple path fallbacks), prints a clear `[tieout] ANTHROPIC_API_KEY loaded` line at startup, and `run.ps1` also injects it — so live runs work without manual setup. (Cached filings never need a key.)
+
+*Deeper data-modelling bugs the live runs exposed — mezzanine equity, equity-method income, discontinued operations, segment double-counting, 52/53-week fiscal years — are written up under the **Approach** tab and [ARCHITECTURE.md](ARCHITECTURE.md).*
 
 ## Status
 

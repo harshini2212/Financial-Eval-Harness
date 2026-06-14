@@ -8,6 +8,7 @@ is instant; `force=True` recomputes live (EDGAR + Claude).
 from __future__ import annotations
 
 import json
+import os
 from decimal import Decimal
 from pathlib import Path
 
@@ -33,6 +34,40 @@ _DESC = {t.template_id: t for t in REGISTRY}
 # Committed so a fresh clone serves the UI instantly, offline, with no API key.
 # "Run live" overwrites these when a key + network are available.
 _CACHE_DIR = Path("data/web")
+
+
+def load_api_key() -> bool:
+    """Best-effort: load ANTHROPIC_API_KEY from .env or the out-of-repo
+    credentials file so live runs work without manual env setup. Runs on import
+    so it applies no matter how the server is started. Returns True if a key is set."""
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        return True
+    home = Path(os.path.expanduser("~"))
+    candidates = [
+        Path(".env"),
+        Path(os.environ.get("LOCALAPPDATA", "")) / "tieout" / "credentials.env",
+        home / "AppData" / "Local" / "tieout" / "credentials.env",
+        home / ".tieout" / "credentials.env",
+    ]
+    for p in candidates:
+        try:
+            if str(p) and p.exists():
+                for line in p.read_text(encoding="utf-8").splitlines():
+                    line = line.strip()
+                    if not line or line.startswith("#") or "=" not in line:
+                        continue
+                    if line.lower().startswith("export "):
+                        line = line[7:]
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+        except Exception:
+            pass
+        if os.environ.get("ANTHROPIC_API_KEY"):
+            return True
+    return bool(os.environ.get("ANTHROPIC_API_KEY"))
+
+
+load_api_key()
 
 
 def _f(x) -> float | None:

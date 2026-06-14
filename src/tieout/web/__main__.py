@@ -6,34 +6,20 @@
 
 from __future__ import annotations
 
-import os
 import sys
-from pathlib import Path
 
 from . import service
 
 
-def _load_env() -> None:
-    """Make live runs work out of the box: if ANTHROPIC_API_KEY isn't already
-    set, load it from ./.env or the out-of-repo credentials file."""
-    if os.environ.get("ANTHROPIC_API_KEY"):
-        return
-    candidates = [Path(".env"),
-                  Path(os.environ.get("LOCALAPPDATA", "")) / "tieout" / "credentials.env"]
-    for p in candidates:
-        try:
-            if p and p.exists():
-                for line in p.read_text(encoding="utf-8").splitlines():
-                    line = line.strip()
-                    if line and not line.startswith("#") and "=" in line:
-                        k, v = line.split("=", 1)
-                        os.environ.setdefault(k.strip(), v.strip())
-        except Exception:
-            pass
-
-
 def main() -> None:
-    _load_env()
+    # service import already attempted to load the key; report the result clearly.
+    has_key = service.load_api_key()
+    if has_key:
+        print("[tieout] ANTHROPIC_API_KEY loaded — live company runs enabled.")
+    else:
+        print("[tieout] No ANTHROPIC_API_KEY found — cached filings work, but "
+              "live runs are disabled. Set the key or use run.ps1.")
+
     if "--precompute" in sys.argv:
         for f in service.filings_index():
             print(f"analyzing {f['ticker']} ...", flush=True)
