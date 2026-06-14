@@ -1,0 +1,5 @@
+# Full server (live runs): FastAPI + Claude + XBRL parsing.
+fastapi>=0.110
+uvicorn[standard]>=0.27
+anthropic>=0.40
+arelle-release>=2.20
