@@ -12,7 +12,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from ..attribution import attribute_run
-from ..constraints import Status
+from ..constraints import Status, is_aggregable
 from ..engine import CheckerEngine, PropagatingEngine
 from ..engine.propagating import _expr_str
 from ..extract import (BaselineExtractor, LlmTextExtractor, ResponseCache,
@@ -140,6 +140,34 @@ def _localization(gt_facts, periods, fy) -> dict | None:
             "residual": _f(r.residual), "suspects": suspects}
 
 
+def _segments(gt, periods, fy) -> dict | None:
+    per = next((p for p in periods if p.fiscal_year == fy
+                and p.type.value == "duration"), None)
+    if per is None:
+        return None
+    seg = [f for f in gt.query("revenue.segment", per, source=Source.XBRL)
+           if is_aggregable(f.dims_dict(), "segment")]
+    if not seg:
+        return None
+    total_f = gt.query("revenue.total", per, dimensions={}, source=Source.XBRL)
+    total = _f(total_f[0].value) if total_f else None
+    # Some filers tag a segment at several granularities (segment, segment x
+    # category, duplicates across contexts). Keep one value per segment — the
+    # largest, which is the segment total rather than a sub-row.
+    best: dict[str, float] = {}
+    for f in seg:
+        name = dict(f.dimensions).get("segment", "?").replace("Member", "")
+        v = _f(f.value)
+        if name not in best or v > best[name]:
+            best[name] = v
+    members = sorted(({"name": k, "value": v} for k, v in best.items()),
+                     key=lambda m: -m["value"])
+    ssum = sum(m["value"] for m in members)
+    return {"members": members, "total": total, "sum": ssum,
+            "reconciles": total is not None
+            and abs(ssum - total) <= max(abs(total) * 0.005, 1e6)}
+
+
 def _scorecard_json(sc) -> dict:
     return {"name": sc.name, "facts": sc.extracted, "agree": sc.agree,
             "disagree": sc.disagree, "satisfied": sc.satisfied,
@@ -189,6 +217,7 @@ def analyze(ticker: str, *, force: bool = False) -> dict:
         "constraints": _constraint_rows(gt_results, claude_results, fy),
         "facts": _fact_comparison(claude_store, gt, fy),
         "propagation": _propagation(gt, periods, fy),
+        "segments": _segments(gt, periods, fy),
         "attribution": [{"id": a.template_id, "label": a.label.value,
                          "evidence": a.evidence}
                         for a in attribute_run(REGISTRY, periods, claude_store, gt)

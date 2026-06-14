@@ -368,6 +368,25 @@
       "inputs": 2
     }
   ],
+  "segments": {
+    "members": [
+      {
+        "name": "NorthAmericaSegment",
+        "value": 426305000000.0
+      },
+      {
+        "name": "InternationalSegment",
+        "value": 161894000000.0
+      },
+      {
+        "name": "AmazonWebServicesSegment",
+        "value": 128725000000.0
+      }
+    ],
+    "total": 716924000000.0,
+    "sum": 716924000000.0,
+    "reconciles": true
+  },
   "attribution": [],
   "localization": {
     "injected_segment": "NorthAmericaSegmentMember",

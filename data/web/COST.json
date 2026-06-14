@@ -376,6 +376,25 @@
       "inputs": 2
     }
   ],
+  "segments": {
+    "members": [
+      {
+        "name": "UnitedStates",
+        "value": 200046000000.0
+      },
+      {
+        "name": "OtherInternational",
+        "value": 38266000000.0
+      },
+      {
+        "name": "Canada",
+        "value": 36923000000.0
+      }
+    ],
+    "total": 275235000000.0,
+    "sum": 275235000000.0,
+    "reconciles": true
+  },
   "attribution": [],
   "localization": {
     "injected_segment": "UnitedStatesMember",

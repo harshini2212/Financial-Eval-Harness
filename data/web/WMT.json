@@ -1,23 +1,23 @@
 {
-  "ticker": "KHC",
-  "issuer": "Kraft Heinz Co",
-  "fiscal_year": 2025,
-  "filing_date": "2026-02-12",
-  "url": "https://www.sec.gov/Archives/edgar/data/1637459/000163745926000009/khc-20251227.htm",
+  "ticker": "WMT",
+  "issuer": "Walmart Inc.",
+  "fiscal_year": 2026,
+  "filing_date": "2026-03-13",
+  "url": "https://www.sec.gov/Archives/edgar/data/104169/000010416926000055/wmt-20260131.htm",
   "scorecards": [
     {
       "name": "Claude (text)",
       "facts": 25,
-      "agree": 18,
-      "disagree": 0,
-      "satisfied": 8,
+      "agree": 16,
+      "disagree": 1,
+      "satisfied": 6,
       "violated": 1,
       "soft": 0,
-      "indeterminate": 7,
+      "indeterminate": 9,
       "judge_invisible": 0,
       "attributions": [
         {
-          "id": "opinc.segments_sum",
+          "id": "is.gross_profit",
           "label": "undetermined",
           "evidence": "no complete XBRL ground truth to disambiguate"
         }
@@ -26,8 +26,8 @@
     {
       "name": "Baseline (regex)",
       "facts": 13,
-      "agree": 0,
-      "disagree": 11,
+      "agree": 6,
+      "disagree": 5,
       "satisfied": 0,
       "violated": 1,
       "soft": 0,
@@ -35,9 +35,9 @@
       "judge_invisible": 0,
       "attributions": [
         {
-          "id": "bs.balance",
-          "label": "extraction_error",
-          "evidence": "assets.total: text=27 vs xbrl=81,786,000,000 (delta -81,785,999,973); liabilities.total: text=39,997 vs xbrl=39,997,000,000 (delta -39,996,960,003); equity.total: text=41,777 vs xbrl=41,777,000,000 (delta -41,776,958,223); equity.temporary: text=12 vs xbrl=12,000,000 (delta -11,999,988)"
+          "id": "is.gross_profit",
+          "label": "undetermined",
+          "evidence": "no complete XBRL ground truth to disambiguate"
         }
       ]
     }
@@ -48,12 +48,12 @@
       "description": "Assets = Liabilities + Total equity + Mezzanine equity",
       "severity": "hard",
       "formula": "assets.total = liabilities.total + equity.total + equity.temporary",
-      "gt_status": "satisfied",
-      "gt_residual": 0.0,
-      "gt_band": 2000000.0,
-      "claude_status": "satisfied",
-      "claude_residual": 0.0,
-      "claude_band": 408930000.0
+      "gt_status": "indeterminate",
+      "gt_residual": null,
+      "gt_band": null,
+      "claude_status": "indeterminate",
+      "claude_residual": null,
+      "claude_band": null
     },
     {
       "id": "bs.lse_crosscheck",
@@ -65,19 +65,19 @@
       "gt_band": 1000000.0,
       "claude_status": "satisfied",
       "claude_residual": 0.0,
-      "claude_band": 408930000.0
+      "claude_band": 1423340000.0
     },
     {
       "id": "bs.lse_decomp",
       "description": "Total liabilities & equity = Liabilities + Equity + Mezzanine",
       "severity": "hard",
       "formula": "liabilities_and_equity.total = liabilities.total + equity.total + equity.temporary",
-      "gt_status": "satisfied",
-      "gt_residual": 0.0,
-      "gt_band": 2000000.0,
-      "claude_status": "satisfied",
-      "claude_residual": 0.0,
-      "claude_band": 408930000.0
+      "gt_status": "indeterminate",
+      "gt_residual": null,
+      "gt_band": null,
+      "claude_status": "indeterminate",
+      "claude_residual": null,
+      "claude_band": null
     },
     {
       "id": "bs.assets_split",
@@ -113,7 +113,7 @@
       "gt_band": 1500000.0,
       "claude_status": "satisfied",
       "claude_residual": 0.0,
-      "claude_band": 208885000.0
+      "claude_band": 529435000.0
     },
     {
       "id": "is.gross_profit",
@@ -123,9 +123,9 @@
       "gt_status": "indeterminate",
       "gt_residual": null,
       "gt_band": null,
-      "claude_status": "satisfied",
-      "claude_residual": 0.0,
-      "claude_band": 41545000.0
+      "claude_status": "violated",
+      "claude_residual": -6750000000.0,
+      "claude_band": 888840000.0
     },
     {
       "id": "is.operating_income",
@@ -149,7 +149,7 @@
       "gt_band": 1500000.0,
       "claude_status": "satisfied",
       "claude_residual": 0.0,
-      "claude_band": 29240000.0
+      "claude_band": 111350000.0
     },
     {
       "id": "is.net_income_attribution",
@@ -161,31 +161,31 @@
       "gt_band": 1500000.0,
       "claude_status": "satisfied",
       "claude_residual": 0.0,
-      "claude_band": 29240000.0
+      "claude_band": 111350000.0
     },
     {
       "id": "rev.segments_sum",
       "description": "Sum of segment revenue = Total revenue",
       "severity": "hard",
       "formula": "revenue.total = sum(revenue.segment[segment])",
-      "gt_status": "indeterminate",
-      "gt_residual": null,
-      "gt_band": null,
+      "gt_status": "violated",
+      "gt_residual": -1569940000000.0,
+      "gt_band": 155000000.0,
       "claude_status": "satisfied",
-      "claude_residual": 0.0,
-      "claude_band": 124710000.0
+      "claude_residual": 36000000.0,
+      "claude_band": 3565635000.0
     },
     {
       "id": "opinc.segments_sum",
       "description": "Sum of segment operating income = Operating income",
       "severity": "hard",
       "formula": "operating_income.total = sum(operating_income.segment[segment])",
-      "gt_status": "indeterminate",
-      "gt_residual": null,
-      "gt_band": null,
-      "claude_status": "violated",
-      "claude_residual": -9942000000.0,
-      "claude_band": 26365000.0
+      "gt_status": "violated",
+      "gt_residual": -2878000000.0,
+      "gt_band": 2000000.0,
+      "claude_status": "satisfied",
+      "claude_residual": 0.0,
+      "claude_band": 149125000.0
     },
     {
       "id": "margin.gross",
@@ -239,184 +239,287 @@
   "facts": [
     {
       "concept": "assets.current",
-      "text": 10127000000.0,
-      "xbrl": 10127000000.0,
+      "text": 84874000000.0,
+      "xbrl": 84874000000.0,
       "agree": true
     },
     {
       "concept": "assets.total",
-      "text": 81786000000.0,
-      "xbrl": 81786000000.0,
+      "text": 284668000000.0,
+      "xbrl": 284668000000.0,
       "agree": true
     },
     {
       "concept": "cfo.total",
-      "text": 4462000000.0,
-      "xbrl": 4462000000.0,
+      "text": 41565000000.0,
+      "xbrl": 41565000000.0,
       "agree": true
     },
     {
       "concept": "cogs.total",
-      "text": 16633000000.0,
-      "xbrl": 16633000000.0,
+      "text": 535395000000.0,
+      "xbrl": 535395000000.0,
       "agree": true
     },
     {
       "concept": "equity.nci",
-      "text": 113000000.0,
-      "xbrl": 113000000.0,
+      "text": 6270000000.0,
+      "xbrl": 6270000000.0,
       "agree": true
     },
     {
       "concept": "equity.parent",
-      "text": 41664000000.0,
-      "xbrl": 41664000000.0,
+      "text": 99617000000.0,
+      "xbrl": 99617000000.0,
       "agree": true
     },
     {
       "concept": "equity.temporary",
-      "text": 12000000.0,
-      "xbrl": 12000000.0,
+      "text": 293000000.0,
+      "xbrl": 293000000.0,
       "agree": true
     },
     {
       "concept": "equity.total",
-      "text": 41777000000.0,
-      "xbrl": 41777000000.0,
+      "text": 105887000000.0,
+      "xbrl": 105887000000.0,
       "agree": true
     },
     {
       "concept": "gross_profit.total",
-      "text": 8309000000.0,
-      "xbrl": 8309000000.0,
-      "agree": true
+      "text": 171018000000.0,
+      "xbrl": null,
+      "agree": null
     },
     {
       "concept": "income_tax.total",
-      "text": 403000000.0,
-      "xbrl": 403000000.0,
+      "text": 7199000000.0,
+      "xbrl": 7199000000.0,
       "agree": true
     },
     {
       "concept": "liabilities.current",
-      "text": 8778000000.0,
-      "xbrl": 8778000000.0,
-      "agree": true
-    },
-    {
-      "concept": "liabilities.total",
-      "text": 39997000000.0,
-      "xbrl": 39997000000.0,
+      "text": 107469000000.0,
+      "xbrl": 107469000000.0,
       "agree": true
     },
     {
       "concept": "liabilities_and_equity.total",
-      "text": 81786000000.0,
-      "xbrl": 81786000000.0,
+      "text": 284668000000.0,
+      "xbrl": 284668000000.0,
       "agree": true
     },
     {
       "concept": "net_income.consolidated",
-      "text": -5848000000.0,
-      "xbrl": -5848000000.0,
+      "text": 22270000000.0,
+      "xbrl": 22270000000.0,
       "agree": true
     },
     {
       "concept": "net_income.nci",
-      "text": -2000000.0,
-      "xbrl": -2000000.0,
+      "text": 377000000.0,
+      "xbrl": 377000000.0,
       "agree": true
     },
     {
       "concept": "net_income.parent",
-      "text": -5846000000.0,
-      "xbrl": -5846000000.0,
+      "text": 21893000000.0,
+      "xbrl": 21893000000.0,
       "agree": true
     },
     {
       "concept": "operating_income.total",
-      "text": -4669000000.0,
-      "xbrl": -4669000000.0,
+      "text": 29825000000.0,
+      "xbrl": 29825000000.0,
       "agree": true
     },
     {
       "concept": "pretax_income.total",
-      "text": -5445000000.0,
-      "xbrl": -5445000000.0,
+      "text": 29469000000.0,
+      "xbrl": 29469000000.0,
       "agree": true
     },
     {
       "concept": "revenue.total",
-      "text": 24942000000.0,
-      "xbrl": null,
-      "agree": null
+      "text": 713163000000.0,
+      "xbrl": 706413000000.0,
+      "agree": false
     }
   ],
   "propagation": [
     {
+      "concept": "liabilities.total",
+      "value": 178488000000.0,
+      "unit": "USD",
+      "op": "liabilities.total (from assets.total = liabilities.total + equity.total + equity.temporary)",
+      "inputs": 3
+    },
+    {
       "concept": "assets.noncurrent",
-      "value": 71659000000.0,
+      "value": 199794000000.0,
       "unit": "USD",
       "op": "assets.noncurrent (from assets.total = assets.current + assets.noncurrent)",
       "inputs": 2
     },
     {
       "concept": "liabilities.noncurrent",
-      "value": 31219000000.0,
+      "value": 71019000000.0,
       "unit": "USD",
       "op": "liabilities.noncurrent (from liabilities.total = liabilities.current + liabilities.noncurrent)",
       "inputs": 2
     },
     {
-      "concept": "revenue.total",
-      "value": 24942000000.0,
+      "concept": "gross_profit.total",
+      "value": 171018000000.0,
       "unit": "USD",
-      "op": "revenue.total (from gross_profit.total = revenue.total - cogs.total)",
+      "op": "gross_profit.total = revenue.total - cogs.total",
       "inputs": 2
     },
     {
       "concept": "opex.total",
-      "value": 12978000000.0,
+      "value": 141193000000.0,
       "unit": "USD",
       "op": "opex.total (from operating_income.total = gross_profit.total - opex.total)",
       "inputs": 2
     },
     {
       "concept": "gross_margin.ratio",
-      "value": 0.33313286959356947,
+      "value": 0.24209350620783235,
       "unit": "ratio",
       "op": "gross_margin.ratio = gross_profit.total / revenue.total",
       "inputs": 2
     },
     {
       "concept": "operating_margin.ratio",
-      "value": -0.18719429185918096,
+      "value": 0.04222034419011094,
       "unit": "ratio",
       "op": "operating_margin.ratio = operating_income.total / revenue.total",
       "inputs": 2
     },
     {
       "concept": "net_margin.ratio",
-      "value": -0.23438377152769066,
+      "value": 0.030991785259281566,
       "unit": "ratio",
       "op": "net_margin.ratio = net_income.parent / revenue.total",
       "inputs": 2
     },
     {
       "concept": "effective_tax_rate.ratio",
-      "value": -0.07401286488739861,
+      "value": 0.24429061083022593,
       "unit": "ratio",
       "op": "effective_tax_rate.ratio = income_tax.total / pretax_income.total",
       "inputs": 2
     }
   ],
-  "segments": null,
+  "segments": {
+    "members": [
+      {
+        "name": "WalmartUS",
+        "value": 485599000000.0
+      },
+      {
+        "name": "WalmartInternational",
+        "value": 131988000000.0
+      },
+      {
+        "name": "SamsClubUS",
+        "value": 95540000000.0
+      }
+    ],
+    "total": 706413000000.0,
+    "sum": 713127000000.0,
+    "reconciles": false
+  },
   "attribution": [
     {
-      "id": "opinc.segments_sum",
+      "id": "is.gross_profit",
       "label": "undetermined",
       "evidence": "no complete XBRL ground truth to disambiguate"
     }
   ],
-  "localization": null
+  "localization": {
+    "injected_segment": "WalmartUSMember",
+    "injected_amount": 5000000000,
+    "residual": -1574940000000.0,
+    "suspects": [
+      {
+        "concept": "revenue.segment",
+        "segment": "WalmartInternationalMember",
+        "value": 130423000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.segment",
+        "segment": "WalmartUSMember",
+        "value": 490599000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.segment",
+        "segment": "SamsClubUSMember",
+        "value": 95540000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.segment",
+        "segment": "WalmartInternationalMember",
+        "value": 131988000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.segment",
+        "segment": "WalmartInternationalMember",
+        "value": 35800000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.segment",
+        "segment": "WalmartInternationalMember",
+        "value": 130423000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.segment",
+        "segment": "WalmartUSMember",
+        "value": 482975000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.segment",
+        "segment": "SamsClubUSMember",
+        "value": 93015000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.segment",
+        "segment": "WalmartUSMember",
+        "value": 99600000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.segment",
+        "segment": "WalmartUSMember",
+        "value": 482975000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.segment",
+        "segment": "SamsClubUSMember",
+        "value": 93015000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.segment",
+        "segment": "SamsClubUSMember",
+        "value": 15000000000.0,
+        "score": 1.0
+      },
+      {
+        "concept": "revenue.total",
+        "segment": "(total)",
+        "value": 706413000000.0,
+        "score": 0.2
+      }
+    ]
+  }
 }

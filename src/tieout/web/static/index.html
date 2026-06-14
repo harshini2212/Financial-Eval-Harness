@@ -124,11 +124,39 @@
   .feat .ic{width:34px;height:34px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:17px;margin-bottom:12px}
   ul.clean{margin:6px 0 0;padding-left:18px;color:var(--muted)} ul.clean li{margin:7px 0}
   ul.clean b{color:var(--text)}
+  /* badge */
+  .badge{font-size:10.5px;font-weight:700;letter-spacing:.3px;color:var(--accent);background:var(--accent-soft);padding:3px 8px;border-radius:20px;margin-left:8px;vertical-align:2px}
+  /* live search */
+  .search{display:flex;align-items:center;gap:6px;margin-left:14px;padding-left:14px;border-left:1px solid var(--line)}
+  .search input{border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:13px;width:230px;font-family:var(--sans);color:var(--text)}
+  .search input:focus{outline:none;border-color:var(--accent)}
+  .search .go{background:var(--accent);color:#fff;border:none;padding:8px 14px;border-radius:9px;font-weight:600;font-size:13px;cursor:pointer}
+  .runmsg{color:var(--accent);font-size:12.5px;font-weight:500;margin-left:auto;display:flex;align-items:center}
+  /* charts */
+  .chartgrid{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+  @media(max-width:820px){.chartgrid{grid-template-columns:1fr}}
+  .pbar{display:flex;height:26px;border-radius:7px;overflow:hidden;background:var(--gray-soft)}
+  .pbar>div{height:100%}
+  .obar{display:flex;align-items:center;gap:12px;margin:11px 0}
+  .obar .who{width:160px;font-size:13px} .obar .who b{font-weight:700}
+  .obar .pbar{flex:1;height:22px}
+  .donutwrap{display:flex;align-items:center;gap:20px}
+  .dlegend{font-size:13px} .dlegend div{margin:6px 0}
+  .wfall{margin:6px 0 2px}
+  .wbar{display:flex;height:34px;border-radius:8px;overflow:hidden;background:var(--gray-soft);border:1px solid var(--line)}
+  .wbar>div{height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden}
+  .wbar .gap{background:repeating-linear-gradient(45deg,#fde2e2,#fde2e2 6px,#f9caca 6px,#f9caca 12px);color:var(--bad)}
+  .wflabels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}
+  .aside{background:var(--accent-soft);border:1px solid #cfdcff;border-radius:12px;padding:14px 16px;font-size:13px;color:#274690}
+  .aside h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent)}
+  .vuln{background:var(--bad-soft);border:1px solid #f3c0c0;border-radius:12px;padding:14px 16px;margin-bottom:16px}
+  .vuln.clean{background:var(--ok-soft);border-color:#bfe6cb}
+  .vuln h4{margin:0 0 4px;font-size:14px}
 </style>
 </head>
 <body>
 <div class="topbar"><div class="wrap nav">
-  <div class="brand"><span class="logo"><i class="a"></i><i></i><i></i><i></i></span> tieout</div>
+  <div class="brand"><span class="logo"><i class="a"></i><i></i><i></i><i></i></span> tieout <span class="badge">BUILT FOR ROGO</span></div>
   <div class="navlinks" id="tabs"></div>
   <a class="ghbtn" href="https://github.com/harshini2212/Financial-Eval-Harness" target="_blank">GitHub ↗</a>
 </div></div>
@@ -158,6 +186,27 @@ function labelChip(l){const m={extraction_error:'bad',filing_inconsistency:'warn
 function sevChip(s){return s==='soft'?'<span class="chip gray">soft</span>':'<span class="chip acc">hard</span>';}
 function pageHead(t,s){return `<div class="phead"><h2>${t}</h2><p class="lead">${s}</p></div>`;}
 function metric(l,v,d,tone){return `<div class="metric"><div class="l">${l}</div><div class="v">${v}</div>${d?`<div class="d ${tone||'flat'}">${d}</div>`:''}</div>`;}
+const CATCOLORS=['#2f6bff','#16a34a','#d97706','#7c3aed','#0891b2','#db2777','#65a30d'];
+function pbar(parts){const tot=parts.reduce((s,p)=>s+p.v,0)||1;
+  return `<div class="pbar">${parts.filter(p=>p.v>0).map(p=>`<div style="width:${p.v/tot*100}%;background:${p.c}" title="${p.t||''}"></div>`).join('')}</div>`;}
+function donut(parts){const tot=parts.reduce((s,p)=>s+p.v,0)||1;const R=54,C=2*Math.PI*R;let off=0,segs='';
+  parts.forEach(p=>{if(!p.v)return;const len=p.v/tot*C;
+    segs+=`<circle r="${R}" cx="70" cy="70" fill="none" stroke="${p.c}" stroke-width="16" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`;off+=len;});
+  return `<svg width="140" height="140" viewBox="0 0 140 140">${segs}
+    <text x="70" y="66" text-anchor="middle" font-size="26" font-weight="700" fill="#0d1117">${tot}</text>
+    <text x="70" y="84" text-anchor="middle" font-size="11" fill="#646b76">checks</text></svg>`;}
+function legendRows(parts){return parts.map(p=>`<div><span class="dot" style="background:${p.c}"></span>${p.t} <b>${p.v}</b></div>`).join('');}
+function waterfall(seg){
+  const sum=seg.sum||1; let slices='';
+  seg.members.forEach((m,i)=>{const w=m.value/sum*100;
+    slices+=`<div style="width:${w}%;background:${CATCOLORS[i%CATCOLORS.length]}" title="${m.name}: ${money(m.value)}">${w>11?m.name.slice(0,12):''}</div>`;});
+  let verdict='';
+  if(seg.total!=null){const diff=seg.total-seg.sum;
+    verdict=seg.reconciles
+      ? `<span class="chip ok">✓ reconciles to total ${money(seg.total)}</span>`
+      : `<span class="chip warn">differs ${money(Math.abs(diff))} · corporate &amp; eliminations</span>`;}
+  return `<div class="wfall"><div class="wbar">${slices}</div>
+    <div class="wflabels"><span>Σ segments = <b>${money(sum)}</b></span><span>${verdict}</span></div></div>`;}
 
 async function boot(){
   S.filings=await(await fetch('/api/filings')).json();
@@ -177,8 +226,29 @@ function renderChrome(){
   const fb=document.getElementById('filings');fb.innerHTML='<span class="lbl">Filing</span>';
   S.filings.forEach(f=>{const p=$(`<button class="pill ${f.ticker===S.ticker?'active':''}"><span class="t">${f.ticker}</span><span class="n">${f.note}</span></button>`);
     p.onclick=()=>{S.ticker=f.ticker;renderChrome();render();};fb.appendChild(p);});
-  const run=$(`<button class="runbtn" id="runbtn">${S.busy?'<span class=spin></span>Running…':'↻ Run live'}</button>`);
-  run.onclick=runLive;fb.appendChild(run);
+  // live connector: search any company on SEC EDGAR and run the eval live
+  const sg=$(`<div class="search">
+    <input id="tsearch" placeholder="Run any company — e.g. WMT, NVDA, KO" ${S.busy?'disabled':''}/>
+    <button class="go" id="tgo" ${S.busy?'disabled':''}>Run live</button></div>`);
+  fb.appendChild(sg);
+  const go=()=>runTicker(document.getElementById('tsearch').value);
+  sg.querySelector('#tgo').onclick=go;
+  sg.querySelector('#tsearch').onkeydown=(e)=>{if(e.key==='Enter')go();};
+  if(S.busy) fb.appendChild($(`<div class="runmsg"><span class="spin"></span>${S.runmsg||'Running…'}</div>`));
+}
+const STAGES=['Resolving ticker on SEC EDGAR…','Downloading the 10-K + XBRL…','Parsing the financial statements…','Extracting figures with Claude…','Checking accounting identities…'];
+async function runTicker(t){
+  t=(t||'').trim().toUpperCase(); if(!t||S.busy) return;
+  S.busy=true; S.runmsg=STAGES[0]; renderChrome();
+  let i=0; const timer=setInterval(()=>{i=(i+1)%STAGES.length;S.runmsg=STAGES[i];const m=document.querySelector('.runmsg');if(m)m.innerHTML='<span class="spin"></span>'+S.runmsg;},2200);
+  try{
+    const r=await fetch('/api/analysis/'+encodeURIComponent(t)+'/run',{method:'POST'});
+    if(!r.ok) throw new Error((await r.json()).detail||r.statusText);
+    const data=await r.json(); S.analyses[t]=data;
+    if(!S.filings.find(f=>f.ticker===t)) S.filings.push({ticker:t,issuer:data.issuer,note:'live'});
+    S.ticker=t; S.tab='explorer';
+  }catch(e){ alert('Could not run "'+t+'": '+e.message+'\n\nNeeds ANTHROPIC_API_KEY set on the server, and the ticker must file a 10-K on SEC EDGAR.'); }
+  clearInterval(timer); S.busy=false; renderChrome(); render();
 }
 async function runLive(){
   if(S.busy)return;S.busy=true;renderChrome();
@@ -212,6 +282,14 @@ function vOverview(){
       <div class="fcard"><div class="h">Costco segments (limited context)</div><div class="m"><span class="dot" style="background:var(--bad)"></span>parts ≠ total · off by $38.27B <span class="chip bad" style="margin-left:6px">✗</span></div></div>
       <div class="fcard"><div class="h">Derived, never stated</div><div class="m"><span class="dot" style="background:var(--accent)"></span>gross margin = 12.84%</div></div>
     </div></div>`));
+
+  let obars='';
+  S.filings.forEach(f=>{const a=S.analyses[f.ticker];if(!a||a.error)return;const s=a.scorecards[0];
+    obars+=`<div class="obar"><div class="who"><b>${f.ticker}</b> · Claude</div>
+      ${pbar([{v:s.agree,c:'#16a34a',t:'agree'},{v:s.disagree,c:'#dc2626',t:'disagree'}])}
+      <div class="muted mono" style="width:62px;text-align:right">${s.agree}/${s.agree+s.disagree}</div></div>`;});
+  el.appendChild($(`<div class="card"><h3>Extraction accuracy vs. official data</h3>
+    <div class="sub">Green = figures that match the SEC's structured data; red = mismatches. Claude clears all three filings.</div>${obars}</div>`));
 
   const sc=$(`<div class="card"><h3>Cross-filing scoreboard</h3>
     <div class="sub">Claude (reading the text) vs. a dumb regex baseline, both graded against the SEC's own structured data (XBRL).</div></div>`);
@@ -247,6 +325,25 @@ function vExplorer(){
     ${metric('Hard violations',sc.violated,sc.violated===0?'clean':'caught',sc.violated===0?'up':'down')}
     ${metric('Gaps filled by graph',a.propagation.length,'derived w/ provenance','flat')}
   </div>`));
+
+  // vulnerability summary (front and center)
+  const viols=a.attribution;
+  el.appendChild($(viols.length
+    ? `<div class="vuln"><h4>⚠ ${viols.length} issue(s) the constraint layer flagged</h4>${viols.map(x=>`<div style="margin-top:7px"><code>${x.id}</code> ${labelChip(x.label)} <span class="muted">${x.evidence}</span></div>`).join('')}</div>`
+    : `<div class="vuln clean"><h4>✓ No vulnerabilities found</h4><div class="muted">Every figure Claude extracted reconciles against the filing's official data.</div></div>`));
+
+  // charts: segment waterfall + identity-outcome donut
+  const counts={satisfied:0,violated:0,indeterminate:0};
+  a.constraints.forEach(c=>{if(counts[c.gt_status]!==undefined)counts[c.gt_status]++;});
+  const dparts=[{v:counts.satisfied,c:'#16a34a',t:'ties out'},{v:counts.violated,c:'#dc2626',t:'breaks'},{v:counts.indeterminate,c:'#cbd2da',t:'n/a · missing inputs'}];
+  const donutCard=`<div class="card"><h3>Identity outcomes</h3>
+    <div class="sub">How the 16 checks land on the official data.</div>
+    <div class="donutwrap">${donut(dparts)}<div class="dlegend">${legendRows(dparts)}</div></div></div>`;
+  const wfCard=a.segments?`<div class="card"><h3>Do the segments add up to the total?</h3>
+    <div class="sub">Reportable segments stacked against consolidated revenue — the check that catches a dropped segment.</div>
+    ${waterfall(a.segments)}
+    <div class="aside" style="margin-top:14px"><h4>What to notice</h4>If a segment were missing, the bar wouldn't reach the total and a striped "missing" slice would appear — exactly the $38B Costco omission an LLM judge waves through.</div></div>`:'';
+  el.appendChild($(`<div class="chartgrid">${wfCard||donutCard}${wfCard?donutCard:''}</div>`));
 
   const cc=$(`<div class="card"><h3>The 16 accounting identities</h3>
     <div class="sub">"Residual" = how far the two sides are apart; it must stay inside the rounding-aware tolerance band.</div></div>`);
