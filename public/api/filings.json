@@ -1,0 +1,1 @@
+[{"ticker": "COST", "issuer": "Costco Wholesale", "note": "clean baseline", "cached": true}, {"ticker": "AMZN", "issuer": "Amazon", "note": "multi-segment + equity-method", "cached": true}, {"ticker": "KHC", "issuer": "Kraft Heinz", "note": "mezzanine equity", "cached": true}]

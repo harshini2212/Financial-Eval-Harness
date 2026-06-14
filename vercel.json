@@ -1,0 +1,10 @@
+{
+  "outputDirectory": "public",
+  "cleanUrls": false,
+  "rewrites": [
+    {"source": "/api/filings", "destination": "/api/filings.json"},
+    {"source": "/api/registry", "destination": "/api/registry.json"},
+    {"source": "/api/health", "destination": "/api/health.json"},
+    {"source": "/api/analysis/:ticker", "destination": "/api/analysis/:ticker.json"}
+  ]
+}
