@@ -30,6 +30,12 @@ def search(q: str = ""):
     return service.search_companies(q)
 
 
+@app.get("/api/health")
+def health():
+    import os
+    return {"api_key": bool(os.environ.get("ANTHROPIC_API_KEY"))}
+
+
 @app.get("/api/analysis/{ticker}")
 def analysis(ticker: str):
     try:
