@@ -370,6 +370,45 @@ def analyze(ticker: str, *, force: bool = False) -> dict:
     return result
 
 
+_agent_stores: dict = {}
+
+
+def _agent_store(ticker: str):
+    t = ticker.upper()
+    if t not in _agent_stores:
+        filing = EdgarClient().find_10k(t)
+        s = FactStore(); s.add_all(XbrlDirectExtractor().extract(filing))
+        fy = max(p.fiscal_year for p in periods_in(s.all_facts()))
+        _agent_stores[t] = (s, fy, filing.issuer)
+    return _agent_stores[t]
+
+
+def ask(ticker: str, question: str) -> dict:
+    """Run the Felix agent live over a filing and verify every number it cites."""
+    from ..agent import FelixAgent, verify_answer
+    store, fy, issuer = _agent_store(ticker)
+    ans = FelixAgent(store, model_id="claude-opus-4-8",
+                     cache=ResponseCache(".cache/llm")).answer(question, fy)
+    v = verify_answer(ans, store)
+    return {
+        "issuer": issuer, "fiscal_year": fy, "question": question,
+        "answer": ans.answer, "value": ans.value, "unit": ans.unit,
+        "derivation": ans.derivation, "numbers_used": ans.numbers_used,
+        "tool_calls": len(ans.tool_calls), "error": ans.error,
+        "verdict": {
+            "trusted": v.trusted, "retrieval_ok": v.retrieval_ok,
+            "calculation_ok": v.calculation_ok,
+            "checks": [{"label": c.label, "concept": c.concept, "stated": c.stated,
+                        "truth": c.truth, "ok": c.ok, "note": c.note} for c in v.checks],
+        },
+    }
+
+
+def benchmark() -> dict:
+    p = Path("data/bench/results.json")
+    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"results": {}}
+
+
 _search_client: EdgarClient | None = None
 
 
